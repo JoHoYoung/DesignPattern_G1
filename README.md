@@ -20,8 +20,11 @@
     
    public static Elements collect(Evaluator eval, Element root) { 
    
+   
 	Elements elements = new Elements();
+	
 	NodeTraversor.traverse(new Accumulator(root, elements, eval), root);
+	
 	return elements;
 	
    }
