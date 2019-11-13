@@ -32,11 +32,14 @@
   NodeTraversor.traverse(new Accumulator(root, elements, eval), root) 에서
   
   (1) root는 전체 HTML 코드이다. 
+  
   (2) elements 는 추출한 결과( element들 )를 담을 ArrayList이다.
+  
   (3) eval 은 QueryParser 를 거친 a [href] 이다. (HTML 코드에서 추려낼 대상)
   
   
   NodeTraversor.traverse 내부에서는 DFS 알고리즘을 사용하여 전체 HTML 코드를 탐색하면서 그 중 eval 와 일치하는 것을
+  
   ArrayList인 elements에 저장한다.
   
   결과적으로 
@@ -47,8 +50,11 @@
  출력코드 : 
          
         print("\nLinks: (%d)", links.size());
+	
         for (Element link : links) {
+	
             print(" * a: <%s>  (%s)", link.attr("abs:href"), trim(link.text(), 35));
+	    
         }
         
  출력결과 :
