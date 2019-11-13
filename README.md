@@ -18,11 +18,11 @@
 
 7. Collector.collect(evaluator, doc); 에서 본격적으로 탐색이 시작되는데 
     
-   	public static Elements collect(Evaluator eval, Element root) { // root 가 doc 
-		Elements elements = new Elements();
-		NodeTraversor.traverse(new Accumulator(root, elements, eval), root);
-		return elements;
-	}
+   public static Elements collect(Evaluator eval, Element root) { // root 가 doc 
+	Elements elements = new Elements();
+	NodeTraversor.traverse(new Accumulator(root, elements, eval), root);
+	return elements;
+   }
   
   NodeTraversor.traverse(new Accumulator(root, elements, eval), root) 에서
   
