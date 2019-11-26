@@ -17,14 +17,37 @@ onContentsChanged를 호출하도록 구현했으며
 
 ## DataUtil.java
 
+Internal static utilities for handling data.
+
 
 ## Validate.java
+
+isFalse, isTrue, noNullElements등을 validate를 확인하는 static method가 모여있다.
+
 ## HttpConnection.java
+
+Connection 인터페이스를 HTTP에 맞게 주현한 클래스
+
 ## W3CDom.java
 
-# integration
+org.jsoup.nodes.Document 를 org.w3c.dom.Document로 바꿔주는 클래스
+
+> 적용된 패턴
+> javax.xml.parsers.DocumentBuilderFactory => 팩토리 패턴
 
 # internal
+
+## ConstrainableInputStream.java
+
+InputStream를 상속한 클래스
+
+## Normalizer.java
+
+lowerCase와 trim를 하는 기능을 가진 클래스
+
+## StringUtil.java
+
+String 관련 유틸리티 클래스
 
 # nodes
 
@@ -36,6 +59,13 @@ onContentsChanged를 호출하도록 구현했으며
 
 # safety
 
+## Cleaner.java
+
+HTML파일을 whitelist로 변환해주는 클래스
+
+## Whitelist.java
+
+HTML에 정의된 요소와 속성을 제외한 내용은 삭제하는 클래스
 
 # select
 
@@ -43,7 +73,7 @@ onContentsChanged를 호출하도록 구현했으며
 
 # Connection.java
 
-HTTP 연결 관련 interface
+연결 관련 interface
 
 # Jsoup.java
 
@@ -57,44 +87,3 @@ Exception를 상속하여 특정 상황의 에러 클래스를 만든다.
 ## SerializationException.java
 ## UncheckedIOException.java
 ## UnsupportedMimeTypeException.java
-
-
-
-/* 이거 아래는 다 무시
-# MultiLocaleRule.java
-
-
-# TextUtil.java
-
-## Dependency
-
-1. java.util.regex.Pattern 
-
-정규표현식을 이용해서 사용자가 설계된 원하는 값만 입력할 수 있도록 만들어 준다. 
-
-```
-\r	The carriage-return character ('\u000D')
-X?	X, once or not at all
-\n	The newline (line feed) character ('\u000A')
-\s	A whitespace character: [ \t\n\x0B\f\r]
-X*	X, zero or more times
-```
-
-> \r는 탈출 문자(Escape Character)로 Carriage Return(CR)이란 의미를 가진다.   
-> \n은 Line Feed(LF)란 의미를 가지며 일반적으로 New Line이라고 읽는다.
-
-> OS에 따라서 줄바꿈을 다르게 사용합니다.
-윈도우 계열은 CRLF, unix 계열은 LF를 사용합니다.
-
-## Structure
-
-### stripeNewlines
-
-```
-Pattern.compile("\\r?\\n\\s*");
-```
-
-위 정규식 개행문자와 공백의 합을 나타냅니다.
-
-stripeNewlines 함수는 개행문자를 찾아서
-빈문자열("")으로 바꿔주는 함수 입니다.
