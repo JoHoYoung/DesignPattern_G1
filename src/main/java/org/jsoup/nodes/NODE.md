@@ -3,7 +3,6 @@
 ![DP (2)](https://user-images.githubusercontent.com/37579650/69909685-4ff3db80-1442-11ea-81da-18b06a97e2dd.png)
 
 ### Purpose
-Iterator, Prototype, Visitor, Composite
 
 ##### Attribute
 > 특정 Key(Attribute Name)의 Value를 저장하는 클래스
@@ -68,7 +67,7 @@ public class Attributes implements Iterable<Attribute>, Cloneable {
 ```
 > Iterator Interface 를 구현히여, Attribute를 순회하는 next, hasNext Method를 오버라이딩 하였다.
 
-#### Prototype Patter
+#### Prototype Pattern
 ```
 public class Attributes implements Iterable<Attribute>, Cloneable {
 .
