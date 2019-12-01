@@ -1,7 +1,6 @@
 ## nodes
 
-![DP (2)](https://user-images.githubusercontent.com/37579650/69909685-4ff3db80-1442-11ea-81da-18b06a97e2dd.png)
-
+![alldiagram](https://user-images.githubusercontent.com/37579650/69910261-91d54f80-144b-11ea-9c6e-8bf6741c7bc5.png)
 ### Purpose
 
 ##### Attribute
@@ -34,6 +33,7 @@ Attrbutes.html()을 통하여 해당 Attributes안에 있는 모든 Attribute들
 
 ### Design Patterns
 #### Iterator Pattern(Attributes – Attribute)
+![iterator](https://user-images.githubusercontent.com/37579650/69910263-91d54f80-144b-11ea-9054-70a0936b93e1.png)
 ```
 public class Attributes implements Iterable<Attribute>, Cloneable {
 .
@@ -68,6 +68,7 @@ public class Attributes implements Iterable<Attribute>, Cloneable {
 > Iterator Interface 를 구현히여, Attribute를 순회하는 next, hasNext Method를 오버라이딩 하였다.
 
 #### Prototype Pattern
+![Prototype](https://user-images.githubusercontent.com/37579650/69910264-926de600-144b-11ea-989d-f9e9270b508b.png)
 ```
 public class Attributes implements Iterable<Attribute>, Cloneable {
 .
@@ -125,6 +126,7 @@ public abstract class Node implements Cloneable {
 #### Composite Patter (Node,  LeafNode, Element)
 ##### Element, LeafNode는 Node의 구현체 이고, Element에는 자식노드를 추가 할 수 있으나, Leaf에는 자식노드를 추가 할 수 없다.
 ##### Element 자식 추가하는 코드
+![composite](https://user-images.githubusercontent.com/37579650/69910262-91d54f80-144b-11ea-8a09-06f818d3aebc.png)
 ```
 public class Element extends Node {
 
