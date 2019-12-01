@@ -1205,11 +1205,11 @@ enum TokeniserState {
             else if (r.matches('>')) {
                 t.emitDoctypePending();
                 t.advanceTransition(Data);
-            } else if (r.matchConsumeIgnoreCase(DocumentType.PUBLIC_KEY)) {
-                t.doctypePending.pubSysKey = DocumentType.PUBLIC_KEY;
+            } else if (r.matchConsumeIgnoreCase(DocumentType.getPublicKeyType())) {
+                t.doctypePending.pubSysKey = DocumentType.getPublicKeyType();
                 t.transition(AfterDoctypePublicKeyword);
-            } else if (r.matchConsumeIgnoreCase(DocumentType.SYSTEM_KEY)) {
-                t.doctypePending.pubSysKey = DocumentType.SYSTEM_KEY;
+            } else if (r.matchConsumeIgnoreCase(DocumentType.getSystemKeyType())) {
+                t.doctypePending.pubSysKey = DocumentType.getSystemKeyType();
                 t.transition(AfterDoctypeSystemKeyword);
             } else {
                 t.error(this);

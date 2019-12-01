@@ -3,6 +3,8 @@ package org.jsoup.nodes;
 import org.jsoup.internal.StringUtil;
 import org.jsoup.helper.Validate;
 import org.jsoup.nodes.Document.OutputSettings.Syntax;
+import org.jsoup.nodes.keystore.KeyStore;
+import org.jsoup.nodes.keystore.KeyStoreFactory;
 
 import java.io.IOException;
 
@@ -10,100 +12,140 @@ import java.io.IOException;
  * A {@code <!DOCTYPE>} node.
  */
 public class DocumentType extends LeafNode {
-    // todo needs a bit of a chunky cleanup. this level of detail isn't needed
-    public static final String PUBLIC_KEY = "PUBLIC";
-    public static final String SYSTEM_KEY = "SYSTEM";
-    private static final String NAME = "name";
-    private static final String PUB_SYS_KEY = "pubSysKey"; // PUBLIC or SYSTEM
-    private static final String PUBLIC_ID = "publicId";
-    private static final String SYSTEM_ID = "systemId";
-    // todo: quirk mode from publicId and systemId
 
-    /**
-     * Create a new doctype element.
-     * @param name the doctype's name
-     * @param publicId the doctype's public ID
-     * @param systemId the doctype's system ID
-     */
-    public DocumentType(String name, String publicId, String systemId) {
-        Validate.notNull(name);
-        Validate.notNull(publicId);
-        Validate.notNull(systemId);
-        attr(NAME, name);
-        attr(PUBLIC_ID, publicId);
-        if (has(PUBLIC_ID)) {
-            attr(PUB_SYS_KEY, PUBLIC_KEY);
-        }
-        attr(SYSTEM_ID, systemId);
-    }
+  private KeyStoreFactory keyStoreFactory = KeyStoreFactory.getInstance();
+  private KeyStore keyStore;
 
-    /**
-     * Create a new doctype element.
-     * @param name the doctype's name
-     * @param publicId the doctype's public ID
-     * @param systemId the doctype's system ID
-     * @param baseUri unused
-     * @deprecated
-     */
-    public DocumentType(String name, String publicId, String systemId, String baseUri) {
-        attr(NAME, name);
-        attr(PUBLIC_ID, publicId);
-        if (has(PUBLIC_ID)) {
-            attr(PUB_SYS_KEY, PUBLIC_KEY);
-        }
-        attr(SYSTEM_ID, systemId);
-    }
+  /**
+   * Create a new doctype element.
+   *
+   * @param name     the doctype's name
+   * @param publicId the doctype's public ID
+   * @param systemId the doctype's system ID
+   */
+  public DocumentType(String name, String publicId, String systemId) {
 
-    /**
-     * Create a new doctype element.
-     * @param name the doctype's name
-     * @param publicId the doctype's public ID
-     * @param systemId the doctype's system ID
-     * @param baseUri unused
-     * @deprecated
-     */
-    public DocumentType(String name, String pubSysKey, String publicId, String systemId, String baseUri) {
-        attr(NAME, name);
-        if (pubSysKey != null) {
-            attr(PUB_SYS_KEY, pubSysKey);
-        }
-        attr(PUBLIC_ID, publicId);
-        attr(SYSTEM_ID, systemId);
-    }
-    public void setPubSysKey(String value) {
-        if (value != null)
-            attr(PUB_SYS_KEY, value);
-    }
+    this.keyStore = keyStoreFactory.getKeyStore("default");
 
-    @Override
-    public String nodeName() {
-        return "#doctype";
-    }
+    Validate.notNull(name);
+    Validate.notNull(publicId);
+    Validate.notNull(systemId);
 
-    @Override
-    void outerHtmlHead(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
-        if (out.syntax() == Syntax.html && !has(PUBLIC_ID) && !has(SYSTEM_ID)) {
-            // looks like a html5 doctype, go lowercase for aesthetics
-            accum.append("<!doctype");
-        } else {
-            accum.append("<!DOCTYPE");
-        }
-        if (has(NAME))
-            accum.append(" ").append(attr(NAME));
-        if (has(PUB_SYS_KEY))
-            accum.append(" ").append(attr(PUB_SYS_KEY));
-        if (has(PUBLIC_ID))
-            accum.append(" \"").append(attr(PUBLIC_ID)).append('"');
-        if (has(SYSTEM_ID))
-            accum.append(" \"").append(attr(SYSTEM_ID)).append('"');
-        accum.append('>');
-    }
+    this.keyStore.setName(name);
+    this.keyStore.setPublicId(publicId);
+    this.keyStore.setSystemId(systemId);
 
-    @Override
-    void outerHtmlTail(Appendable accum, int depth, Document.OutputSettings out) {
+    attr(this.keyStore.getNameType(), this.keyStore.getName());
+    attr(this.keyStore.getPublicIdType(), this.keyStore.getPublicId());
+    if (has(keyStore.getPublicIdType())) {
+      attr(keyStore.getPublicSystemKeyType(), this.keyStore.getPublicKeyType());
     }
+    attr(this.keyStore.getSystemIdType(), this.keyStore.getSystemId());
+  }
 
-    private boolean has(final String attribute) {
-        return !StringUtil.isBlank(attr(attribute));
+  /**
+   * Create a new doctype element.
+   *
+   * @param name     the doctype's name
+   * @param publicId the doctype's public ID
+   * @param systemId the doctype's system ID
+   * @param baseUri  unused
+   * @deprecated
+   */
+
+  public DocumentType(String name, String publicId, String systemId, String baseUri) {
+
+    this.keyStore = keyStoreFactory.getKeyStore("default");
+
+    this.keyStore.setName(name);
+    this.keyStore.setPublicId(publicId);
+    this.keyStore.setSystemId(systemId);
+
+    attr(this.keyStore.getNameType(), this.keyStore.getName());
+    attr(this.keyStore.getPublicIdType(), this.keyStore.getPublicId());
+
+    if (has(this.keyStore.getPublicIdType())) {
+      attr(this.keyStore.getPublicSystemKeyType(), this.keyStore.getPublicKey());
     }
+    attr(this.keyStore.getSystemIdType(), this.keyStore.getSystemId());
+  }
+
+  public void setKeyStore(String name) {
+    this.keyStore = keyStoreFactory.getKeyStore(name);
+  }
+
+  /**
+   * Create a new doctype element.
+   *
+   * @param name     the doctype's name
+   * @param publicId the doctype's public ID
+   * @param systemId the doctype's system ID
+   * @param baseUri  unused
+   * @deprecated
+   */
+  public DocumentType(String name, String pubSysKey, String publicId, String systemId, String baseUri) {
+    this.keyStore = keyStoreFactory.getKeyStore("default");
+
+    this.keyStore.setName(name);
+    this.keyStore.setPublicSystemKey(pubSysKey);
+    this.keyStore.setPublicId(publicId);
+    this.keyStore.setSystemId(systemId);
+
+    attr(this.keyStore.getNameType(), this.keyStore.getName());
+
+
+    if (pubSysKey != null) {
+      attr(this.keyStore.getPublicSystemKeyType(), this.keyStore.getPublicSystemKey());
+    }
+    attr(this.keyStore.getPublicIdType(), this.keyStore.getPublicId());
+    attr(this.keyStore.getSystemIdType(), this.keyStore.getSystemId());
+  }
+
+  public void setPubSysKey(String value) {
+    if (value != null){
+      this.keyStore.setPublicSystemKey(value);
+      attr(this.keyStore.getPublicSystemKeyType(), this.keyStore.getPublicSystemKey());
+
+    }
+  }
+
+  @Override
+  public String nodeName() {
+    return "#doctype";
+  }
+
+  @Override
+  void outerHtmlHead(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
+    if (out.syntax() == Syntax.html && !has(this.keyStore.getPublicIdType()) && !has(this.keyStore.getSystemIdType())) {
+      // looks like a html5 doctype, go lowercase for aesthetics
+      accum.append("<!doctype");
+    } else {
+      accum.append("<!DOCTYPE");
+    }
+    if (has(this.keyStore.getNameType()))
+      accum.append(" ").append(attr(this.keyStore.getNameType()));
+    if (has(this.keyStore.getPublicSystemKeyType()))
+      accum.append(" ").append(attr(this.keyStore.getPublicSystemKeyType()));
+    if (has(this.keyStore.getPublicIdType()))
+      accum.append(" \"").append(attr(this.keyStore.getPublicIdType())).append('"');
+    if (has(this.keyStore.getSystemIdType()))
+      accum.append(" \"").append(attr(this.keyStore.getSystemIdType())).append('"');
+    accum.append('>');
+  }
+
+  @Override
+  void outerHtmlTail(Appendable accum, int depth, Document.OutputSettings out) {
+  }
+
+  public static String getSystemKeyType() {
+    return "SYSTEM";
+  }
+
+  public static String getPublicKeyType() {
+    return "PUBLIC";
+  }
+
+  private boolean has(final String attribute) {
+    return !StringUtil.isBlank(attr(attribute));
+  }
 }
