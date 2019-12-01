@@ -6,6 +6,9 @@
 #
 ![Final-Class-Diagram](https://user-images.githubusercontent.com/57391270/69909778-854cf900-1443-11ea-9e72-a9d8def3975c.jpg)
 #
+# 주요 클래스 설명
+
+
 # 사용된 디자인패턴
 
 팩토리 패턴과 커맨드 패턴이 사용되었다.
