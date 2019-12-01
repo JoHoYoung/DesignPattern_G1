@@ -1,7 +1,7 @@
 # Select 
-
-**역할** 요청한 주소의 HTML 코드와 선택자 ( ex. a , div , img > div 등등 CSS Selector ) 를 이용하여 HTML 코드에서 추출하고 싶은 태그를 추려낼 수 있도록 함.
-
+#
+요청한 주소의 HTML 코드와 선택자 ( ex. a , div , img > div 등등 CSS Selector ) 를 이용하여 HTML 코드에서 추출하고 싶은 태그를 추려낼 수 있도록 함.
+#
 # Class Diagram 
 #
 ![Final-Class-Diagram](https://user-images.githubusercontent.com/57391270/69909778-854cf900-1443-11ea-9e72-a9d8def3975c.jpg)
@@ -103,7 +103,7 @@ HTML 코드를 탐색하는 알고리즘의 유연성을 확보한다.
 #
 ![StrategyBFS](https://user-images.githubusercontent.com/57391270/69910613-9bfa4c80-1451-11ea-9ebf-0cd0e86b6663.JPG)
 #
-위 그림은 추가로  BFS 코드이다.
+위 그림은 새로운 클래스에 추가된 BFS 코드이다.
 #
 ![Strategy_AFTER](https://user-images.githubusercontent.com/57391270/69910621-b7655780-1451-11ea-9f7a-609e217a42ca.JPG)
 #
