@@ -27,22 +27,24 @@ QueryParser.parse() 에서 findElements() 메소드를 통해 태그에 맞는
 결과적으로 태그에 맞게 생성된 클래스가 List(사진에서 evals) 에 추가된다.
 #
 
-# 커맨드 패턴
+# 전략 패턴
 #
 ![Command-abstract](https://user-images.githubusercontent.com/57391270/69908519-9f301100-142e-11ea-91e3-67feb2d75a65.JPG)
 #
 
-Evaluator 추상 클래스를 만들어 공통적인 matches 메소드를 정의한다.
+Evaluator 추상 클래스를 만들어 공통적인 matches 메소드를 캡슐화한다.
 
 ![Command-Concrete](https://user-images.githubusercontent.com/57391270/69908520-a3f4c500-142e-11ea-8b3d-c91057383e3a.JPG)
+#
 
-Evaluator 클래스를 구현하는 Concrete 클래스에서는 각기 다른 matches 메소드를
+![Command-Concrete_2](https://user-images.githubusercontent.com/57391270/69909637-5897e200-1441-11ea-98d0-b787661cb1ce.JPG)
+Evaluator 클래스를 구현하는 Concrete 클래스에서는 각기 다른 matches 로직을
 구현한다.  
 #
 ![Command-1](https://user-images.githubusercontent.com/57391270/69908522-a5be8880-142e-11ea-847b-e0163ab238b0.JPG)
+
 #
-클라이언트에서는 matches 라는 메소드 이름만 알고 호출하여 어떤
-Evaluator 인지에 대한 정보 없이 호출이 가능하다.
+클라이언트에서는 matches 라는 메소드명만 알고 호출하여 로직은 캡슐화 된다.
 #
 #
 #
