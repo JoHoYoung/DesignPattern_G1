@@ -185,3 +185,289 @@ abstract class LeafNode extends Node {
 ```
 > Node의 자식인 Element에는 자식 Node를 추가, LeafNode에는 자식을 추가할 수 없게하여 Composite Pattern을 사용하고 있다.
 
+### 설계 개선 - DocumentType
+##### 기존코드 
+```
+public class DocumentType extends LeafNode {
+    // todo needs a bit of a chunky cleanup. this level of detail isn't needed
+    public static final String PUBLIC_KEY = "PUBLIC";
+    public static final String SYSTEM_KEY = "SYSTEM";
+    private static final String NAME = "name";
+    private static final String PUB_SYS_KEY = "pubSysKey"; // PUBLIC or SYSTEM
+    private static final String PUBLIC_ID = "publicId";
+    private static final String SYSTEM_ID = "systemId";
+    // todo: quirk mode from publicId and systemId
+
+    /**
+     * Create a new doctype element.
+     * @param name the doctype's name
+     * @param publicId the doctype's public ID
+     * @param systemId the doctype's system ID
+     */
+    public DocumentType(String name, String publicId, String systemId) {
+        Validate.notNull(name);
+        Validate.notNull(publicId);
+        Validate.notNull(systemId);
+        attr(NAME, name);
+        attr(PUBLIC_ID, publicId);
+        if (has(PUBLIC_ID)) {
+            attr(PUB_SYS_KEY, PUBLIC_KEY);
+        }
+        attr(SYSTEM_ID, systemId);
+    }
+    .
+    .
+}
+```
+#### 문제점
+![기존구조](https://user-images.githubusercontent.com/37579650/69910351-7a976180-144d-11ea-85d0-bce2724b607c.png)
+
+1. PUBLIC_KEY 같은 값이, DocumentType클래스에 final변수로 고정되어 있다.
+2. 해당 final변수들을 다양하게 가져가려 할 때. DocumentType클래스를 수정해야 한다.
+3. DocumentType객체에 PUBLIC_KEY등을 변경할때 변경값, 현재 값이 따로 저장되어 있지 않다.
+
+#### 해결방안 (Factory Method Pattern + Singleton Pattern)
+![개선](https://user-images.githubusercontent.com/37579650/69910350-7a976180-144d-11ea-8c3c-343615d1b90b.png)
+1. 해당 final 변수들을 설정값 클래스로 따로 분리
+2. 상황에따라 해당 기본 값 변경시 클래스를 확장, composition으로 처리 할 수 있도록 Abstract Class 구현
+3. Abstract Class를 확장하여 OCP 구현.
+4. DocumentType 클래스로 부터의 final변수에 대한 의존성 분리, DIP 적용
+5. 설정값이 추가될 때 마다 코드수정을 최소화하도록 Factory Method Pattern 적용
+6. Factory Instance는 SingleTon 적용
+
+##### 기존코드 
+```
+public class DocumentType extends LeafNode {
+    // todo needs a bit of a chunky cleanup. this level of detail isn't needed
+    public static final String PUBLIC_KEY = "PUBLIC";
+    public static final String SYSTEM_KEY = "SYSTEM";
+    private static final String NAME = "name";
+    private static final String PUB_SYS_KEY = "pubSysKey"; // PUBLIC or SYSTEM
+    private static final String PUBLIC_ID = "publicId";
+    private static final String SYSTEM_ID = "systemId";
+    // todo: quirk mode from publicId and systemId
+
+    /**
+     * Create a new doctype element.
+     * @param name the doctype's name
+     * @param publicId the doctype's public ID
+     * @param systemId the doctype's system ID
+     */
+    public DocumentType(String name, String publicId, String systemId) {
+        Validate.notNull(name);
+        Validate.notNull(publicId);
+        Validate.notNull(systemId);
+        attr(NAME, name);
+        attr(PUBLIC_ID, publicId);
+        if (has(PUBLIC_ID)) {
+            attr(PUB_SYS_KEY, PUBLIC_KEY);
+        }
+        attr(SYSTEM_ID, systemId);
+    }
+}
+```
+##### 개선된 코드
+```
+public class DocumentType extends LeafNode {
+
+  private KeyStoreFactory keyStoreFactory = KeyStoreFactory.getInstance();
+  private KeyStore keyStore;
+
+  /**
+   * Create a new doctype element.
+   *
+   * @param name     the doctype's name
+   * @param publicId the doctype's public ID
+   * @param systemId the doctype's system ID
+   */
+  public DocumentType(String name, String publicId, String systemId) {
+
+    this.keyStore = keyStoreFactory.getKeyStore("default");
+
+    Validate.notNull(name);
+    Validate.notNull(publicId);
+    Validate.notNull(systemId);
+
+    this.keyStore.setName(name);
+    this.keyStore.setPublicId(publicId);
+    this.keyStore.setSystemId(systemId);
+
+    attr(this.keyStore.getNameType(), this.keyStore.getName());
+    attr(this.keyStore.getPublicIdType(), this.keyStore.getPublicId());
+    if (has(keyStore.getPublicIdType())) {
+      attr(keyStore.getPublicSystemKeyType(), this.keyStore.getPublicKey());
+    }
+    attr(this.keyStore.getSystemIdType(), this.keyStore.getSystemId());
+  }
+  .
+  .
+}
+```
+##### KeyStore Abstract Class
+```
+package org.jsoup.nodes.keystore;
+
+public abstract class KeyStore {
+  private String PUBLIC_KEY_TYPE;
+  private String SYSTEM_KEY_TYPE;
+  private String NAME_TYPE;
+  private String PUB_SYS_KEY_TYPE;
+  private String PUBLIC_ID_TYPE;
+  private String SYSTEM_ID_TYPE;
+
+  public KeyStore(){
+    this.PUBLIC_KEY_TYPE = "PUBLIC";
+    this.SYSTEM_KEY_TYPE = "SYSTEM";
+    this.NAME_TYPE = "name";
+    this.PUB_SYS_KEY_TYPE = "pubSysKey";
+    this.PUBLIC_ID_TYPE = "publicId";
+    this.SYSTEM_ID_TYPE= "systemId";
+  }
+
+  public String getPublicKeyType() {
+    return this.PUBLIC_KEY_TYPE;
+  }
+  public String getSystemKeyType() {
+    return this.SYSTEM_KEY_TYPE;
+  }
+  public String getNameType() {
+    return this.NAME_TYPE;
+  }
+  public String getPublicSystemKeyType() {
+    return this.PUB_SYS_KEY_TYPE;
+  }
+  public String getPublicIdType() {
+    return this.PUBLIC_ID_TYPE;
+  }
+  public String getSystemIdType() {
+    return this.SYSTEM_ID_TYPE;
+  }
+
+  abstract public String getPublicKey();
+  abstract public String getSystemKey();
+  abstract public String getName();
+  abstract public String getPublicSystemKey();
+  abstract public String getPublicId();
+  abstract public String getSystemId();
+
+  abstract public void setPublicKey(String value);
+  abstract public void setSystemKey(String value);
+  abstract public void setName(String value);
+  abstract public void setPublicSystemKey(String value);
+  abstract public void setPublicId(String value);
+  abstract public void setSystemId(String value);
+
+}
+```
+##### DefaultKeyStore (KeyStore Implementation)
+```
+package org.jsoup.nodes.keystore;
+
+public class DefaultKeyStore extends KeyStore {
+
+  private String PUBLIC_KEY;
+  private String SYSTEM_KEY;
+  private String NAME;
+  private String PUB_SYS_KEY;
+  private String PUBLIC_ID;
+  private String SYSTEM_ID;
+
+  public DefaultKeyStore(){
+    super();
+    this.PUBLIC_KEY = "PUBLIC";
+    this.SYSTEM_KEY = "SYSTEM";
+    this.NAME = "name";
+    this.PUB_SYS_KEY = "pubSysKey";
+    this.PUBLIC_ID = "publicId";
+    this.SYSTEM_ID = "systemId";
+  }
+
+  @Override
+  public String getPublicKey() {
+    return this.PUBLIC_KEY;
+  }
+
+  @Override
+  public String getSystemKey() {
+    return this.SYSTEM_KEY;
+  }
+  @Override
+  public String getName() {
+    return this.NAME;
+  }
+  @Override
+  public String getPublicSystemKey() {
+    return this.PUB_SYS_KEY;
+  }
+
+  @Override
+  public String getPublicId() {
+    return this.PUBLIC_ID;
+  }
+
+  @Override
+  public String getSystemId() {
+    return this.SYSTEM_ID;
+  }
+
+  @Override
+  public void setPublicKey(String value) {
+    this.PUBLIC_KEY = value;
+  }
+
+  @Override
+  public void setSystemKey(String value) {
+    this.SYSTEM_KEY = value;
+  }
+  @Override
+  public void setName(String value) {
+    this.NAME = value;
+  }
+  @Override
+  public void setPublicSystemKey(String value) {
+    this.PUB_SYS_KEY = value;
+  }
+
+  @Override
+  public void setPublicId(String value) {
+    this.PUBLIC_ID = value;
+  }
+
+  @Override
+  public void setSystemId(String value) {
+    this.SYSTEM_ID = value;
+  }
+
+}
+```
+##### KeyStoreFactory( Singleton, Factory)
+```
+package org.jsoup.nodes.keystore;
+
+public class KeyStoreFactory {
+
+  private volatile static KeyStoreFactory instance = null;
+
+  private KeyStoreFactory(){};
+
+  public static KeyStoreFactory getInstance(){
+    if(instance == null){
+      synchronized (KeyStoreFactory.class){
+        if(instance == null){
+          instance = new KeyStoreFactory();
+        }
+        return instance;
+      }
+    }
+    return instance;
+  }
+
+  public KeyStore getKeyStore(String name){
+    if(name == "default"){
+      return new DefaultKeyStore();
+    }
+    return new DefaultKeyStore();
+  }
+}
+
+```
