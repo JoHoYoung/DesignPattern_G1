@@ -72,6 +72,44 @@
  * a: <>  (자동완성 펼치기)
  * a: <>  (한글 입력기)
 
+# 사용된 디자인패턴
 
+팩토리 패턴과 커맨드 패턴이 사용되었다.
 
- 계속해서 추가하겠습니다.
+# 팩토리 패턴
+
+![Factory-1](https://user-images.githubusercontent.com/57391270/69908493-11ecbc80-142e-11ea-8c9a-8f635bbacb56.JPG)
+#
+대표적으로 사용자가 입력한 Css Selector 를 파싱하여 의미를 파악하게 도와주는
+QueryParser.parse() 메소드는 사용자의 String 입력에 맞춰 QueryParser 
+클래스에서 생성할 클래스를 결정해 준다.  
+#
+  
+![Factory-2](https://user-images.githubusercontent.com/57391270/69908501-3c3e7a00-142e-11ea-967f-84c63683ddc1.JPG)
+#
+QueryParser.parse() 에서 findElements() 메소드를 통해 태그에 맞는
+적합한 생성자를 찾게 한다.
+#
+#
+![Factory-2_1](https://user-images.githubusercontent.com/57391270/69908508-537d6780-142e-11ea-9c43-8cb8bfb07fd5.JPG)
+![Factory-2_2](https://user-images.githubusercontent.com/57391270/69908510-61cb8380-142e-11ea-9b24-c611d7d62b7d.JPG)
+#
+결과적으로 태그에 맞게 생성된 클래스가 List(사진에서 evals) 에 추가된다.
+#
+
+# 커맨드 패턴
+#
+![Command-abstract](https://user-images.githubusercontent.com/57391270/69908519-9f301100-142e-11ea-91e3-67feb2d75a65.JPG)
+#
+
+Evaluator 추상 클래스를 만들어 공통적인 matches 메소드를 정의한다.
+
+![Command-Concrete](https://user-images.githubusercontent.com/57391270/69908520-a3f4c500-142e-11ea-8b3d-c91057383e3a.JPG)
+
+Evaluator 클래스를 구현하는 Concrete 클래스에서는 각기 다른 matches 메소드를
+구현한다.  
+#
+![Command-1](https://user-images.githubusercontent.com/57391270/69908522-a5be8880-142e-11ea-847b-e0163ab238b0.JPG)
+#
+클라이언트에서는 matches 라는 메소드 이름만 알고 호출하여 어떤
+Evaluator 인지에 대한 정보 없이 호출이 가능하다.
