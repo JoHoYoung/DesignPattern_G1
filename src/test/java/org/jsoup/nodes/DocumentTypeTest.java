@@ -8,8 +8,6 @@ import static org.junit.Assert.*;
 
 /**
  * Tests for the DocumentType node
- *
- * @author Jonathan Hedley, http://jonathanhedley.com/
  */
 public class DocumentTypeTest {
     @Test

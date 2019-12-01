@@ -38,7 +38,7 @@ public class DocumentType extends LeafNode {
     attr(this.keyStore.getNameType(), this.keyStore.getName());
     attr(this.keyStore.getPublicIdType(), this.keyStore.getPublicId());
     if (has(keyStore.getPublicIdType())) {
-      attr(keyStore.getPublicSystemKeyType(), this.keyStore.getPublicKey());
+      attr(keyStore.getPublicSystemKeyType(), this.keyStore.getPublicKeyType());
     }
     attr(this.keyStore.getSystemIdType(), this.keyStore.getSystemId());
   }
@@ -52,6 +52,7 @@ public class DocumentType extends LeafNode {
    * @param baseUri  unused
    * @deprecated
    */
+
   public DocumentType(String name, String publicId, String systemId, String baseUri) {
 
     this.keyStore = keyStoreFactory.getKeyStore("default");
@@ -101,9 +102,11 @@ public class DocumentType extends LeafNode {
   }
 
   public void setPubSysKey(String value) {
-    if (value != null)
+    if (value != null){
       this.keyStore.setPublicSystemKey(value);
-    attr(this.keyStore.getPublicSystemKeyType(), this.keyStore.getPublicSystemKey());
+      attr(this.keyStore.getPublicSystemKeyType(), this.keyStore.getPublicSystemKey());
+
+    }
   }
 
   @Override
