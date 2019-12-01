@@ -332,7 +332,7 @@ jsoup changelog
  * Added the new selector :containsData(), to find elements that hold data, like script and style tags.
 
  * Changed Jsoup.isValid(bodyHtml) to validate that the input contains only body HTML that is safe according to the
-   whitelist, and does not include HTML errors. And in the Jsoup.Cleaner.isValid(Document) method, make sure the doc
+   filter, and does not include HTML errors. And in the Jsoup.Cleaner.isValid(Document) method, make sure the doc
    only includes body HTML.
    <https://github.com/jhy/jsoup/issues/245>
    <https://github.com/jhy/jsoup/issues/632>
@@ -608,7 +608,7 @@ jsoup changelog
  * If pretty-print is disabled, don't trim outer whitespace in Element.html()
    <https://github.com/jhy/jsoup/issues/368>
 
- * In the HTML Cleaner, allow span tags in the basic whitelist, and span and div tags in the relaxed whitelist.
+ * In the HTML Cleaner, allow span tags in the basic filter, and span and div tags in the relaxed filter.
 
   * Added Element.cssSelector(), which returns a unique CSS selector/path for an element.
     <https://github.com/jhy/jsoup/pull/459>
@@ -799,7 +799,7 @@ jsoup changelog
  * Fixed NPE when HTML fragment parsing a <style> tag
    <https://github.com/jhy/jsoup/issues/189>
 
- * Fixed issue with :all pseudo-tag in HTML sanitizer when cleaning tags previously defined in whitelist
+ * Fixed issue with :all pseudo-tag in HTML sanitizer when cleaning tags previously defined in filter
    <https://github.com/jhy/jsoup/issues/156>
 
  * Fixed NPE in Parser.parseFragment() when context parameter is null.
@@ -1129,7 +1129,7 @@ jsoup changelog
     prepend(String), append(String); bulk methods for corresponding
     methods in Element.
 
- * New feature: Jsoup.isValid(html, whitelist) method for user input
+ * New feature: Jsoup.isValid(html, filter) method for user input
     form validation.
  
  * Improved Elements.attr(String) to find first matching element

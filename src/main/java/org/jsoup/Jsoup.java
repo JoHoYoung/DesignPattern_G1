@@ -2,10 +2,12 @@ package org.jsoup;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
+import org.jsoup.safety.BlacklistCleaner;
 import org.jsoup.safety.Cleaner;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Filter;
 import org.jsoup.helper.DataUtil;
 import org.jsoup.helper.HttpConnection;
+import org.jsoup.safety.WhitelistCleaner;
 
 import java.io.File;
 import java.io.IOException;
@@ -183,71 +185,49 @@ public class Jsoup {
         return con.get();
     }
 
-    /**
-     Get safe HTML from untrusted input HTML, by parsing input HTML and filtering it through a white-list of permitted
-     tags and attributes.
-
-     @param bodyHtml  input untrusted HTML (body fragment)
-     @param baseUri   URL to resolve relative URLs against
-     @param whitelist white-list of permitted HTML elements
-     @return safe HTML (body fragment)
-
-     @see Cleaner#clean(Document)
-     */
-    public static String clean(String bodyHtml, String baseUri, Whitelist whitelist) {
+    public static String cleanWhitelist(String bodyHtml, String baseUri, Filter filter) {
         Document dirty = parseBodyFragment(bodyHtml, baseUri);
-        Cleaner cleaner = new Cleaner(whitelist);
+        Cleaner cleaner = new WhitelistCleaner(filter);
         Document clean = cleaner.clean(dirty);
         return clean.body().html();
     }
 
-    /**
-     Get safe HTML from untrusted input HTML, by parsing input HTML and filtering it through a white-list of permitted
-     tags and attributes.
-
-     @param bodyHtml  input untrusted HTML (body fragment)
-     @param whitelist white-list of permitted HTML elements
-     @return safe HTML (body fragment)
-
-     @see Cleaner#clean(Document)
-     */
-    public static String clean(String bodyHtml, Whitelist whitelist) {
-        return clean(bodyHtml, "", whitelist);
+    public static String cleanWhitelist(String bodyHtml, Filter filter) {
+        return cleanWhitelist(bodyHtml, "", filter);
     }
 
-    /**
-     * Get safe HTML from untrusted input HTML, by parsing input HTML and filtering it through a white-list of
-     * permitted tags and attributes.
-     * <p>The HTML is treated as a body fragment; it's expected the cleaned HTML will be used within the body of an
-     * existing document. If you want to clean full documents, use {@link Cleaner#clean(Document)} instead, and add
-     * structural tags (<code>html, head, body</code> etc) to the whitelist.
-     *
-     * @param bodyHtml input untrusted HTML (body fragment)
-     * @param baseUri URL to resolve relative URLs against
-     * @param whitelist white-list of permitted HTML elements
-     * @param outputSettings document output settings; use to control pretty-printing and entity escape modes
-     * @return safe HTML (body fragment)
-     * @see Cleaner#clean(Document)
-     */
-    public static String clean(String bodyHtml, String baseUri, Whitelist whitelist, Document.OutputSettings outputSettings) {
+    public static String cleanWhitelist(String bodyHtml, String baseUri, Filter filter, Document.OutputSettings outputSettings) {
         Document dirty = parseBodyFragment(bodyHtml, baseUri);
-        Cleaner cleaner = new Cleaner(whitelist);
+        Cleaner cleaner = new WhitelistCleaner(filter);
         Document clean = cleaner.clean(dirty);
         clean.outputSettings(outputSettings);
         return clean.body().html();
     }
 
-    /**
-     Test if the input body HTML has only tags and attributes allowed by the Whitelist. Useful for form validation.
-     <p>The input HTML should still be run through the cleaner to set up enforced attributes, and to tidy the output.
-     <p>Assumes the HTML is a body fragment (i.e. will be used in an existing HTML document body.)
-     @param bodyHtml HTML to test
-     @param whitelist whitelist to test against
-     @return true if no tags or attributes were removed; false otherwise
-     @see #clean(String, org.jsoup.safety.Whitelist) 
-     */
-    public static boolean isValid(String bodyHtml, Whitelist whitelist) {
-        return new Cleaner(whitelist).isValidBodyHtml(bodyHtml);
+    public static boolean isValidWhitelist(String bodyHtml, Filter filter) {
+        return new WhitelistCleaner(filter).isValidBodyHtml(bodyHtml);
     }
-    
+
+    public static String cleanBlacklist(String bodyHtml, String baseUri, Filter filter) {
+        Document dirty = parseBodyFragment(bodyHtml, baseUri);
+        Cleaner cleaner = new BlacklistCleaner(filter);
+        Document clean = cleaner.clean(dirty);
+        return clean.body().html();
+    }
+
+    public static String cleanBlacklist(String bodyHtml, Filter filter) {
+        return cleanBlacklist(bodyHtml, "", filter);
+    }
+
+    public static String cleanBlacklist(String bodyHtml, String baseUri, Filter filter, Document.OutputSettings outputSettings) {
+        Document dirty = parseBodyFragment(bodyHtml, baseUri);
+        Cleaner cleaner = new BlacklistCleaner(filter);
+        Document clean = cleaner.clean(dirty);
+        clean.outputSettings(outputSettings);
+        return clean.body().html();
+    }
+
+    public static boolean isValidBlacklist(String bodyHtml, Filter filter) {
+        return new BlacklistCleaner(filter).isValidBodyHtml(bodyHtml);
+    }
 }
