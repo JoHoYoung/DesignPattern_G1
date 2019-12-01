@@ -48,7 +48,7 @@ import static org.jsoup.internal.Normalizer.lowerCase;
  <li>{@link #removeEnforcedAttribute}
  <li>{@link #removeProtocols}
  </ul>
- 
+
  <p>
  The cleaner and these whitelists assume that you want to clean a <code>body</code> fragment of HTML (to add user
  supplied HTML into a templated page), and not to clean a full HTML document. If the latter is the case, either wrap the
@@ -57,13 +57,13 @@ import static org.jsoup.internal.Normalizer.lowerCase;
  </p>
  <p>
  If you are going to extend a whitelist, please be very careful. Make sure you understand what attributes may lead to
- XSS attack vectors. URL attributes are particularly vulnerable and require careful validation. See 
+ XSS attack vectors. URL attributes are particularly vulnerable and require careful validation. See
  http://ha.ckers.org/xss.html for some XSS attack examples.
  </p>
 
  @author Jonathan Hedley
  */
-public class Whitelist {
+public class Filter {
     private Set<TagName> tagNames; // tags allowed, lower case. e.g. [p, br, span]
     private Map<TagName, Set<AttributeKey>> attributes; // tag -> attribute[]. allowed attributes [href] for a tag.
     private Map<TagName, Map<AttributeKey, AttributeValue>> enforcedAttributes; // always set these attribute values
@@ -75,8 +75,8 @@ public class Whitelist {
 
      @return whitelist
      */
-    public static Whitelist none() {
-        return new Whitelist();
+    public static Filter none() {
+        return new Filter();
     }
 
     /**
@@ -85,8 +85,8 @@ public class Whitelist {
 
      @return whitelist
      */
-    public static Whitelist simpleText() {
-        return new Whitelist()
+    public static Filter simpleText() {
+        return new Filter()
                 .addTags("b", "em", "i", "strong", "u")
                 ;
     }
@@ -106,8 +106,8 @@ public class Whitelist {
 
      @return whitelist
      */
-    public static Whitelist basic() {
-        return new Whitelist()
+    public static Filter basic() {
+        return new Filter()
                 .addTags(
                         "a", "b", "blockquote", "br", "cite", "code", "dd", "dl", "dt", "em",
                         "i", "li", "ol", "p", "pre", "q", "small", "span", "strike", "strong", "sub",
@@ -132,7 +132,7 @@ public class Whitelist {
 
      @return whitelist
      */
-    public static Whitelist basicWithImages() {
+    public static Filter basicWithImages() {
         return basic()
                 .addTags("img")
                 .addAttributes("img", "align", "alt", "height", "src", "title", "width")
@@ -150,8 +150,8 @@ public class Whitelist {
 
      @return whitelist
      */
-    public static Whitelist relaxed() {
-        return new Whitelist()
+    public static Filter relaxed() {
+        return new Filter()
                 .addTags(
                         "a", "b", "blockquote", "br", "caption", "cite", "code", "col",
                         "colgroup", "dd", "div", "dl", "dt", "em", "h1", "h2", "h3", "h4", "h5", "h6",
@@ -189,7 +189,7 @@ public class Whitelist {
      @see #simpleText()
      @see #relaxed()
      */
-    public Whitelist() {
+    public Filter() {
         tagNames = new HashSet<>();
         attributes = new HashMap<>();
         enforcedAttributes = new HashMap<>();
@@ -203,7 +203,7 @@ public class Whitelist {
      @param tags tag names to allow
      @return this (for chaining)
      */
-    public Whitelist addTags(String... tags) {
+    public Filter addTags(String... tags) {
         Validate.notNull(tags);
 
         for (String tagName : tags) {
@@ -219,7 +219,7 @@ public class Whitelist {
      @param tags tag names to disallow
      @return this (for chaining)
      */
-    public Whitelist removeTags(String... tags) {
+    public Filter removeTags(String... tags) {
         Validate.notNull(tags);
 
         for(String tag: tags) {
@@ -250,7 +250,7 @@ public class Whitelist {
      @param attributes List of valid attributes for the tag
      @return this (for chaining)
      */
-    public Whitelist addAttributes(String tag, String... attributes) {
+    public Filter addAttributes(String tag, String... attributes) {
         Validate.notEmpty(tag);
         Validate.notNull(attributes);
         Validate.isTrue(attributes.length > 0, "No attribute names supplied.");
@@ -286,7 +286,7 @@ public class Whitelist {
      @param attributes List of invalid attributes for the tag
      @return this (for chaining)
      */
-    public Whitelist removeAttributes(String tag, String... attributes) {
+    public Filter removeAttributes(String tag, String... attributes) {
         Validate.notEmpty(tag);
         Validate.notNull(attributes);
         Validate.isTrue(attributes.length > 0, "No attribute names supplied.");
@@ -328,7 +328,7 @@ public class Whitelist {
      @param value The enforced attribute value
      @return this (for chaining)
      */
-    public Whitelist addEnforcedAttribute(String tag, String attribute, String value) {
+    public Filter addEnforcedAttribute(String tag, String attribute, String value) {
         Validate.notEmpty(tag);
         Validate.notEmpty(attribute);
         Validate.notEmpty(value);
@@ -355,7 +355,7 @@ public class Whitelist {
      @param attribute   The attribute name
      @return this (for chaining)
      */
-    public Whitelist removeEnforcedAttribute(String tag, String attribute) {
+    public Filter removeEnforcedAttribute(String tag, String attribute) {
         Validate.notEmpty(tag);
         Validate.notEmpty(attribute);
 
@@ -372,7 +372,7 @@ public class Whitelist {
     }
 
     /**
-     * Configure this Whitelist to preserve relative links in an element's URL attribute, or convert them to absolute
+     * Configure this Filter to preserve relative links in an element's URL attribute, or convert them to absolute
      * links. By default, this is <b>false</b>: URLs will be  made absolute (e.g. start with an allowed protocol, like
      * e.g. {@code http://}.
      * <p>
@@ -383,10 +383,10 @@ public class Whitelist {
      * </p>
      *
      * @param preserve {@code true} to allow relative links, {@code false} (default) to deny
-     * @return this Whitelist, for chaining.
+     * @return this Filter, for chaining.
      * @see #addProtocols
      */
-    public Whitelist preserveRelativeLinks(boolean preserve) {
+    public Filter preserveRelativeLinks(boolean preserve) {
         preserveRelativeLinks = preserve;
         return this;
     }
@@ -407,7 +407,7 @@ public class Whitelist {
      @param protocols List of valid protocols
      @return this, for chaining
      */
-    public Whitelist addProtocols(String tag, String attribute, String... protocols) {
+    public Filter addProtocols(String tag, String attribute, String... protocols) {
         Validate.notEmpty(tag);
         Validate.notEmpty(attribute);
         Validate.notNull(protocols);
@@ -449,7 +449,7 @@ public class Whitelist {
      @param removeProtocols List of invalid protocols
      @return this, for chaining
      */
-    public Whitelist removeProtocols(String tag, String attribute, String... removeProtocols) {
+    public Filter removeProtocols(String tag, String attribute, String... removeProtocols) {
         Validate.notEmpty(tag);
         Validate.notEmpty(attribute);
         Validate.notNull(removeProtocols);
@@ -528,7 +528,7 @@ public class Whitelist {
             value = attr.getValue(); // if it could not be made abs, run as-is to allow custom unknown protocols
         if (!preserveRelativeLinks)
             attr.setValue(value);
-        
+
         for (Protocol protocol : protocols) {
             String prot = protocol.toString();
 
@@ -564,7 +564,7 @@ public class Whitelist {
         }
         return attrs;
     }
-    
+
     // named types for config. All just hold strings, but here for my sanity.
 
     static class TagName extends TypedValue {
