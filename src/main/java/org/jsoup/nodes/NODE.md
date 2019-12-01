@@ -33,7 +33,8 @@ Attrbutes.html()을 통하여 해당 Attributes안에 있는 모든 Attribute들
 
 ### Design Patterns
 #### Iterator Pattern(Attributes – Attribute)
-![iterator](https://user-images.githubusercontent.com/37579650/69910263-91d54f80-144b-11ea-9054-70a0936b93e1.png)
+![iterator2](https://user-images.githubusercontent.com/37579650/69910281-2049d100-144c-11ea-9563-f776de07b241.png)
+
 ```
 public class Attributes implements Iterable<Attribute>, Cloneable {
 .
