@@ -26,7 +26,7 @@ QueryParser : 사용자가 입력한 조건(String)을 파싱하여 String의 �
 #
 # 사용된 디자인패턴
 
-팩토리 패턴과 커맨드 패턴이 사용되었다.
+팩토리 패턴과 전략 패턴이 사용되었다.
 
 # 팩토리 패턴
 
@@ -103,7 +103,7 @@ HTML 코드를 탐색하는 알고리즘의 유연성을 확보한다.
 #
 ![StrategyBFS](https://user-images.githubusercontent.com/57391270/69910613-9bfa4c80-1451-11ea-9ebf-0cd0e86b6663.JPG)
 #
-위 그림은 추가된 BFS 코드이다.
+위 그림은 추가로  BFS 코드이다.
 #
 ![Strategy_AFTER](https://user-images.githubusercontent.com/57391270/69910621-b7655780-1451-11ea-9f7a-609e217a42ca.JPG)
 #
