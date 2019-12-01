@@ -2,6 +2,10 @@
 
 **역할** 요청한 주소의 HTML 코드와 선택자 ( ex. a , div , img > div 등등 CSS Selector ) 를 이용하여 HTML 코드에서 추출하고 싶은 태그를 추려낼 수 있도록 함.
 
+# Class Diagram 
+#
+![Final-Class-Diagram](https://user-images.githubusercontent.com/57391270/69909778-854cf900-1443-11ea-9e72-a9d8def3975c.jpg)
+#
 # 사용된 디자인패턴
 
 팩토리 패턴과 커맨드 패턴이 사용되었다.
