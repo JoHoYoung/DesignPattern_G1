@@ -7,8 +7,23 @@
 ![Final-Class-Diagram](https://user-images.githubusercontent.com/57391270/69909778-854cf900-1443-11ea-9e72-a9d8def3975c.jpg)
 #
 # 주요 클래스 설명
-
-
+#
+Collector : 조건에 맞는 Element 들을 반환한다.
+#
+Selector :  사용자의 입력을 QueryParser 를 이용해 처리하고 Collector 클래스에게 넘겨준다.
+#
+Elements : Elements 는 Element 를 모은 ArrayList 인데 ArrayList에 적용할 수 있는 메소드들을 정의한다.
+#
+Evaluator : 여러 조건의 Evaluator 들이 사용할 수 있는 메소드를 정의하는 추상 클래스
+#
+CombiningEvaluator : 사용자가 입력한 Combining 연산자를 처리한다.
+#
+StructuralEvaluator : 사용자가 입력한 Structural 연산자를 처리한다.
+#
+NodeTraversor :  DFS 방식으로 노드를 탐색하는 클래스
+#
+QueryParser : 사용자가 입력한 조건(String)을 파싱하여 String의 의미를 파악하고 그 결과로 적절한 Evaluator 를 반환한다. 
+#
 # 사용된 디자인패턴
 
 팩토리 패턴과 커맨드 패턴이 사용되었다.
