@@ -4,7 +4,7 @@
 
 # Class Diagram 
 #
-![safety-all](./images/safety-all.png)
+![safety-all](../images/safety-all.png)
 #
 # 주요 클래스 설명
 #

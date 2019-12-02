@@ -4,7 +4,7 @@
 
 # Class Diagram 
 #
-![internal-all](./images/internal-all.png)
+![internal-all](../images/internal-all.png)
 #
 # 주요 클래스 설명
 #

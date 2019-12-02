@@ -5,7 +5,7 @@
 Jsoup은 HTML, XML및 CSS를 파싱해주는 Java library입니다. HTML, XML은 DOM(The Document Object Model) interface를 가지며 트리구조를 이루는 각각의 leaf를 node라고 칭합니다. Jsoup은 이러한 node 구조의 자료구조를 파싱하는 역할을 합니다.
 
 <p align="center">
-    	<img src="./img/DOM.png" width="300" height="300"></img>
+    	<img src="../images/DOM.png" width="300" height="300"></img>
 </p>
 
 
@@ -15,7 +15,7 @@ Jsoup은 HTML, XML및 CSS를 파싱해주는 Java library입니다. HTML, XML은
 Jsoup의 패키지 구조는 다음과 같습니다. root directory에 `Jsoup` 이 존재하고 `Jsoup` 이 하위 패키지 `helper`, `internal`, `nodes`, `parser`, `safety`, `select` 등을 가지고 있습니다.
 
 <p align="center">
-    	<img src="./img/package_structure.png" width="400" height="500"></img>
+    	<img src="../images/package_structure.png" width="400" height="500"></img>
 </p>
 
 
@@ -95,7 +95,7 @@ public class Jsoup {
 
 
 <p align="center">
-    	<img src="./img/package_structure_diagram.png" width="500" height="800"></img>
+    	<img src="../images/package_structure_diagram.png" width="500" height="800"></img>
 </p> 
 
 `jsoup`은 다음과 같이 `safety`, `nodes`, `parser` 에게 의존하고 있는 것을 볼 수 있습니다. 즉 다른 패키지들은 `safety`, `nodes`, `parser`와 같은 패키지들의 하위 모듈로 사용되고 있음을 알 수 있습니다.
@@ -120,7 +120,7 @@ Parser는 크게 다음과 같은 2가지의 패턴으로 이루어져 있습니
 #### Template Method Pattern
 
 <p align="center">
-    	<img src="./img/template_method_pattern.png" width="400" height="300"></img>
+    	<img src="../images/template_method_pattern.png" width="400" height="300"></img>
 </p> 
 
 `TreeBuilder`라는 abstract class를 `HtmlTreeBuilder`와 `XmlTreeBuilder`가 extends하고 있습니다. Html과 Xml의 구조를 만들 때 공통적으로 쓰이는 부분을 추상화 시켜서 추상 클래스를 만들었습니다. 
@@ -184,7 +184,7 @@ final static class EndTag extends Tag{
 엄밀히 말하면 추상화된 행위를 구현하는 정석적인 Command Pattern은 아니지만 Token 이라는 추상화된 단위에 따라서 Tag가 Start와 End로 나뉘고 상황에 따라 다른 Tag의 Token을 주입시키고 있습니다.
 
   <p align="center">
-    	<img src="./img/command_pattern.png" width="400" height="400"></img>
+    	<img src="../images/command_pattern.png" width="400" height="400"></img>
 </p> 
 
 
@@ -212,7 +212,7 @@ protected boolean process(Token token) {
 
 
 <p align="center">
-    	<img src="./img/parser_state_img1.png" width="400" height="700"></img>
+    	<img src="../images/parser_state_img1.png" width="400" height="700"></img>
 </p> 
 
 `HtmlTreeBuilderState` 는 enum 클래스입니다. `HtmlTreeBuilderState` 안에는 아래의 로직들이 있고 `process`라는 abstract 메서드가 있습니다. 그리고 위 그림의 enum 필드는 `process` 를 구현하고 있습니다.
