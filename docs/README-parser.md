@@ -129,9 +129,9 @@ Parser는 크게 다음과 같은 2가지의 패턴으로 이루어져 있습니
 
 
 
-#### Command Pattern
+#### Strategy Pattern
 
-`TreeBuilder`를 보면 다음과 같은 abstract method와 해당 process가 Start인지 End인지에 따라서 다른 행위를 취하는 Command Pattern 사용을 유추해 볼 수 있습니다.
+`TreeBuilder`를 보면 다음과 같은 abstract method와 해당 process가 Start인지 End인지에 따라서 다른 행위를 취하는 Strategy Pattern 사용을 유추해 볼 수 있습니다.
 
 ```java
  protected abstract boolean process(Token token);
@@ -167,7 +167,7 @@ Parser는 크게 다음과 같은 2가지의 패턴으로 이루어져 있습니
 
 ```
 
-Command Pattern을 확인하기 위해 `Token` class를 보면 `Token` class는 abstract class임을 알 수 있습니다. 그리고 `Tag`라는 내부 abstract static 클래스를 선언하고 `Token`을 상속 있습니다. 여기서 Tag는 다시 한 번, 내부 static 클래스인 `StartTag`와 `EndTag`에 의해 상속됩니다.
+Strategy Pattern을 확인하기 위해 `Token` class를 보면 `Token` class는 abstract class임을 알 수 있습니다. 그리고 `Tag`라는 내부 abstract static 클래스를 선언하고 `Token`을 상속 있습니다. 여기서 Tag는 다시 한 번, 내부 static 클래스인 `StartTag`와 `EndTag`에 의해 상속됩니다.
 
 ```java
 final static class StartTag extends Tag {
@@ -179,9 +179,7 @@ final static class EndTag extends Tag{
 }
 ```
 
- 그리고 `StartTag`와 `EndTag`는 위에서 언급한 process, processStartTag, processEndTag에서 사용되고 있습니다. 즉, Command Pattern으로 Token 상태에 따라 행위를 결정하고 있습니다.
-
-엄밀히 말하면 추상화된 행위를 구현하는 정석적인 Command Pattern은 아니지만 Token 이라는 추상화된 단위에 따라서 Tag가 Start와 End로 나뉘고 상황에 따라 다른 Tag의 Token을 주입시키고 있습니다.
+ 그리고 `StartTag`와 `EndTag`는 위에서 언급한 process, processStartTag, processEndTag에서 사용되고 있습니다. 즉, Strategy Pattern으로 Token 상태에 따라 행위를 결정하고 있습니다.
 
   <p align="center">
     	<img src="../images/command_pattern.png" width="400" height="400"></img>
