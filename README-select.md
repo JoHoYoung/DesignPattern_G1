@@ -34,21 +34,57 @@ QueryParser : 사용자가 입력한 조건(String)을 파싱하여 String의 �
 #
 소스코드
 #
-![Factory-1](https://user-images.githubusercontent.com/57391270/69908493-11ecbc80-142e-11ea-8c9a-8f635bbacb56.JPG)
+```java
+    public static Elements select(String query, Element root) {
+        Validate.notEmpty(query);
+        return select(QueryParser.parse(query), root);
+    }
+```
 #
 사용자가 입력한 조건인 Css Selector 를 파싱하여 의미를 파악하게 도와주는
 QueryParser.parse() 메소드는 사용자의 String 입력에 맞춰 QueryParser 
 클래스에서 생성할 클래스를 결정해 준다.  
 #
   
-![Factory-2](https://user-images.githubusercontent.com/57391270/69908501-3c3e7a00-142e-11ea-967f-84c63683ddc1.JPG)
+```java
+private void findElements() {
+        if (tq.matchChomp("#"))
+            byId();
+        else if (tq.matchChomp("."))
+            byClass();
+        else if (tq.matchesWord() || tq.matches("*|"))
+            byTag();
+        else if (tq.matches("["))
+            byAttribute();
+        else if (tq.matchChomp("*"))
+            allElements();
+        else if (tq.matchChomp(":lt("))
+            indexLessThan();
+        else if (tq.matchChomp(":gt("))
+            indexGreaterThan();
+        else if (tq.matchChomp(":eq("))
+            indexEquals();
+```
 #
 QueryParser.parse() 에서 findElements() 메소드를 통해 태그에 맞는
 적합한 생성자를 찾게 한다.
 #
 #
-![Factory-2_1](https://user-images.githubusercontent.com/57391270/69908508-537d6780-142e-11ea-9c43-8cb8bfb07fd5.JPG)
-![Factory-2_2](https://user-images.githubusercontent.com/57391270/69908510-61cb8380-142e-11ea-9b24-c611d7d62b7d.JPG)
+```java
+    private void byId() {
+        String id = tq.consumeCssIdentifier();
+        Validate.notEmpty(id);
+        evals.add(new Evaluator.Id(id));
+    }
+```
+#
+```java
+    private void byClass() {
+        String className = tq.consumeCssIdentifier();
+        Validate.notEmpty(className);
+        evals.add(new Evaluator.Class(className.trim()));
+    }
+```
 #
 결과적으로 태그에 맞게 생성된 클래스가 List(사진에서 evals) 에 추가된다.
 #
@@ -58,19 +94,60 @@ QueryParser.parse() 에서 findElements() 메소드를 통해 태그에 맞는
 #
 소스코드
 #
-![Command-abstract](https://user-images.githubusercontent.com/57391270/69908519-9f301100-142e-11ea-91e3-67feb2d75a65.JPG)
+```java
+public abstract class Evaluator {
+    protected Evaluator() {
+    }
+
+    /**
+     * Test if the element meets the evaluator's requirements.
+     *
+     * @param root    Root of the matching subtree
+     * @param element tested element
+     * @return Returns <tt>true</tt> if the requirements are met or
+     * <tt>false</tt> otherwise
+     */
+    public abstract boolean matches(Element root, Element element);
+```
 #
 
 Evaluator 추상 클래스를 만들어 공통적인 matches 메소드를 캡슐화한다.
 
-![Command-Concrete](https://user-images.githubusercontent.com/57391270/69908520-a3f4c500-142e-11ea-8b3d-c91057383e3a.JPG)
+```java
+public static final class Tag extends Evaluator {
+        private String tagName;
+
+        public Tag(String tagName) {
+            this.tagName = tagName;
+        }
+
+        @Override
+        public boolean matches(Element root, Element element) {
+            return (element.tagName().equalsIgnoreCase(tagName));
+        }
+```
 #
 
-![Command-Concrete_2](https://user-images.githubusercontent.com/57391270/69909637-5897e200-1441-11ea-98d0-b787661cb1ce.JPG)
+```java
+ public static final class IsFirstChild extends Evaluator {
+    	@Override
+    	public boolean matches(Element root, Element element) {
+    		final Element p = element.parent();
+    		return p != null && !(p instanceof Document) && element.elementSiblingIndex() == 0;
+    	}
+```
 Evaluator 클래스를 구현하는 Concrete 클래스에서는 각기 다른 matches 로직을
 구현한다.  
 #
-![Command-1](https://user-images.githubusercontent.com/57391270/69908522-a5be8880-142e-11ea-847b-e0163ab238b0.JPG)
+```java
+public void head(Node node, int depth) {
+			if (node instanceof Element) {
+				Element el = (Element) node;
+				if (eval.matches(root, el))
+					elements.add(el);
+			}
+		}
+```
 
 #
 클라이언트에서는 matches 라는 메소드명만 알고 호출하여 로직은 캡슐화 된다.
@@ -91,28 +168,100 @@ HTML 코드를 탐색하는 알고리즘의 유연성을 확보한다.
 #
 # 기존 코드와의 비교 및 개선
 #
-![Strategy_BEFORE](https://user-images.githubusercontent.com/57391270/69910561-c566a880-1450-11ea-8d9c-46deeb96a26d.JPG)
+```java
+    public static Elements collect (Evaluator eval, Element root) {
+        Elements elements = new Elements();
+        NodeTraversor.traverse(new Accumulator(root, elements, eval), root);
+        return elements;
+    }
+```
 #
 기존 코드는 NodeTraversor 에서 직접 DFS로 구현된 traverse 를 호출하여 알고리즘에 대한 유연성이 부족했다.
 #
-![Strategy1](https://user-images.githubusercontent.com/57391270/69910592-3c03a600-1451-11ea-96d5-a8c610448fa1.JPG)
+```java
+public interface MasterTraverse {
+	public void traverse(Node root);
+	public static void traverse(NodeVisitor visitor, Node root) {}
+}
+```
 #
 이를 개선하고자 MasterTraverse 인터페이스를 생성하여 유연성을 확보하였다.
 #
-![Strategy2](https://user-images.githubusercontent.com/57391270/69910598-53db2a00-1451-11ea-8197-98ad9c75975f.JPG)
+```java
+public class NodeTraversor_BFS implements MasterTraverse{
+```
+#
+```java
+public class NodeTraversor implements MasterTraverse {
+```
 ![Strategy3](https://user-images.githubusercontent.com/57391270/69910599-5ccbfb80-1451-11ea-923b-74d62f6943ee.JPG)
 #
 서로 다른 알고리즘이 들어있는 클래스에서 MasterTraverse 를 구현한다.
 #
-![StrategyDFS](https://user-images.githubusercontent.com/57391270/69910608-8d139a00-1451-11ea-8542-7db5d8d22f69.JPG)
+```java
+public static void traverse(NodeVisitor visitor, Node root) { 
+        Node node = root;
+        int depth = 0;
+        while (node != null) {
+            visitor.head(node, depth);
+            if (node.childNodeSize() > 0) {
+                node = node.childNode(0);
+                depth++;
+            } else {
+                while (node.nextSibling() == null && depth > 0) {
+                    visitor.tail(node, depth);
+                    node = node.parentNode();
+                    depth--;
+                }
+                visitor.tail(node, depth);
+                if (node == root)
+                    break;
+                node = node.nextSibling();
+            }
+        }
+    }
+```
 #
 위 그림은 기존 DFS 코드이다.
 #
-![StrategyBFS](https://user-images.githubusercontent.com/57391270/69910613-9bfa4c80-1451-11ea-9ebf-0cd0e86b6663.JPG)
+```java
+    public static void traverse(NodeVisitor visitor, Node root) {
+    	
+    	Queue<Node> q = new LinkedList<Node>();
+        Node node = root;
+        int depth = 0;
+        q.add(root);
+        
+        while(!q.isEmpty()) {
+        	node = q.poll();
+        	visitor.head(node, depth);
+        	
+        	for(int i=0; i<node.childNodeSize(); i++) {
+        		q.add(node.childNode(i));
+        	}
+        }
+        
+    }
+
+```
 #
 위 그림은 새로운 클래스에 추가된 BFS 코드이다.
 #
-![Strategy_AFTER](https://user-images.githubusercontent.com/57391270/69910621-b7655780-1451-11ea-9f7a-609e217a42ca.JPG)
+```java
+	public static Elements collect(Evaluator eval, Element root) {
+		Elements elements = new Elements();
+		
+		//MasterTraverse for_dfs = new NodeTraversor(new Accumulator(root, elements, eval));
+		MasterTraverse for_bfs = new NodeTraversor_BFS(new Accumulator(root, elements, eval));
+		
+		//for_dfs.traverse(root);
+		for_bfs.traverse(root);;
+		
+		return elements;
+		
+	}
+
+```
 #
 클라이언트 호출 코드이다.
 #
