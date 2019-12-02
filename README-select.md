@@ -29,7 +29,11 @@ QueryParser : 사용자가 입력한 조건(String)을 파싱하여 String의 �
 팩토리 패턴과 전략 패턴이 사용되었다.
 
 # 팩토리 패턴
-
+#
+![factory](https://user-images.githubusercontent.com/57391270/69934459-48513700-1515-11ea-9d75-0b843fafead9.jpg)
+#
+소스코드
+#
 ![Factory-1](https://user-images.githubusercontent.com/57391270/69908493-11ecbc80-142e-11ea-8c9a-8f635bbacb56.JPG)
 #
 사용자가 입력한 조건인 Css Selector 를 파싱하여 의미를 파악하게 도와주는
@@ -50,6 +54,9 @@ QueryParser.parse() 에서 findElements() 메소드를 통해 태그에 맞는
 #
 
 # 전략 패턴
+![strategy](https://user-images.githubusercontent.com/57391270/69934463-49826400-1515-11ea-86ee-23948c449395.jpg)
+#
+소스코드
 #
 ![Command-abstract](https://user-images.githubusercontent.com/57391270/69908519-9f301100-142e-11ea-91e3-67feb2d75a65.JPG)
 #
