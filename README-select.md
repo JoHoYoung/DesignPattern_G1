@@ -90,7 +90,7 @@ QueryParser.parse() 에서 findElements() 메소드를 통해 태그에 맞는
 #
 
 # 전략 패턴
-![strategy](https://user-images.githubusercontent.com/57391270/69934463-49826400-1515-11ea-86ee-23948c449395.jpg)
+![strategy-latest](https://user-images.githubusercontent.com/57391270/69969126-2a102900-155f-11ea-8d7a-11130359b0f6.jpg)
 #
 소스코드
 #
@@ -114,17 +114,18 @@ public abstract class Evaluator {
 Evaluator 추상 클래스를 만들어 공통적인 matches 메소드를 캡슐화한다.
 
 ```java
-public static final class Tag extends Evaluator {
-        private String tagName;
+public static final class IsLastChild extends Evaluator {
+		@Override
+		public boolean matches(Element root, Element element) {
+			final Element p = element.parent();
+			return p != null && !(p instanceof Document) && element.elementSiblingIndex() == p.children().size()-1;
+		}
 
-        public Tag(String tagName) {
-            this.tagName = tagName;
-        }
-
-        @Override
-        public boolean matches(Element root, Element element) {
-            return (element.tagName().equalsIgnoreCase(tagName));
-        }
+		@Override
+		public String toString() {
+			return ":last-child";
+		}
+    }
 ```
 #
 
