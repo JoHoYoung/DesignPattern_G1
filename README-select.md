@@ -189,7 +189,7 @@ public interface MasterTraverse {
 #
 개선된 클래스 다이어그램은 다음과 같다.
 #
-![nodetraverse](https://user-images.githubusercontent.com/57391270/69968479-d8b36a00-155d-11ea-89aa-af539a63ee1c.jpg)
+![nodetraverse (1)](https://user-images.githubusercontent.com/57391270/69968656-3778e380-155e-11ea-9d29-da4200ac4970.jpg)
 #
 ```java
 public class NodeTraversor_BFS implements MasterTraverse{
