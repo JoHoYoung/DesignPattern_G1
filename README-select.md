@@ -194,7 +194,6 @@ public class NodeTraversor_BFS implements MasterTraverse{
 ```java
 public class NodeTraversor implements MasterTraverse {
 ```
-![Strategy3](https://user-images.githubusercontent.com/57391270/69910599-5ccbfb80-1451-11ea-923b-74d62f6943ee.JPG)
 #
 서로 다른 알고리즘이 들어있는 클래스에서 MasterTraverse 를 구현한다.
 #
