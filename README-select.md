@@ -185,7 +185,11 @@ public interface MasterTraverse {
 }
 ```
 #
-이를 개선하고자 MasterTraverse 인터페이스를 생성하여 유연성을 확보하였다.
+이를 개선하고자 MasterTraverse 인터페이스를 생성하여 알고리즘을 변경할 수 있는 유연성을 확보한다.
+#
+개선된 클래스 다이어그램은 다음과 같다.
+#
+![nodetraverse](https://user-images.githubusercontent.com/57391270/69968479-d8b36a00-155d-11ea-89aa-af539a63ee1c.jpg)
 #
 ```java
 public class NodeTraversor_BFS implements MasterTraverse{
