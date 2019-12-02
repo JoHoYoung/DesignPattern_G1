@@ -265,4 +265,83 @@ public static void traverse(NodeVisitor visitor, Node root) {
 #
 클라이언트 호출 코드이다.
 #
+#
+테스트 코드
+#
+```java
+package org.jsoup.select;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.IOException;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Collector.Accumulator;
+import org.junit.jupiter.api.Test;
+
+class CollectorTest {
+	@Test
+	void test_bfs_dfs() throws IOException {
+		String h = "<html><div id=1><p>Test<p><b>Code</b></p></div><div id=2><span>Test</span></div><div></div></html>";
+		String Cssquery = "div";
+		Document doc = Jsoup.parse(h);
+		Evaluator eval = QueryParser.parse(Cssquery);
+		
+		Elements DFS_elements = new Elements();
+		Elements BFS_elements = new Elements();
+
+		MasterTraverse for_dfs = new NodeTraversor(new Accumulator(doc, DFS_elements, eval));
+		MasterTraverse for_bfs = new NodeTraversor_BFS(new Accumulator(doc, BFS_elements, eval));
+		for_dfs.traverse(doc);
+		for_bfs.traverse(doc);
+
+		assertEquals(3, DFS_elements.size());
+		assertEquals(3, BFS_elements.size());
+	}
+	
+	@Test
+	void test_bfs_dfs2() throws IOException {
+		String h = "<p><img src=foo.png id=1><img src=bar.jpg id=2><img src=qux.JPEG id=3><img src=old.gif><img></p>";
+		String Cssquery = "img";
+		Document doc = Jsoup.parse(h);
+		Evaluator eval = QueryParser.parse(Cssquery);
+		
+		Elements DFS_elements = new Elements();
+		Elements BFS_elements = new Elements();
+
+		MasterTraverse for_dfs = new NodeTraversor(new Accumulator(doc, DFS_elements, eval));
+		MasterTraverse for_bfs = new NodeTraversor_BFS(new Accumulator(doc, BFS_elements, eval));
+		for_dfs.traverse(doc);
+		for_bfs.traverse(doc);
+		
+		assertEquals(5, DFS_elements.size());
+		assertEquals(5, BFS_elements.size());
+	}
+
+	@Test
+	void test_bfs_dfs3() throws IOException {
+		String h = "<div title=foo /><div title=bar /><div /><p></p><img /><span title=qux>";
+		String Cssquery = "div";
+		Document doc = Jsoup.parse(h);
+		Evaluator eval = QueryParser.parse(Cssquery);
+		
+		Elements DFS_elements = new Elements();
+		Elements BFS_elements = new Elements();
+
+		MasterTraverse for_dfs = new NodeTraversor(new Accumulator(doc, DFS_elements, eval));
+		MasterTraverse for_bfs = new NodeTraversor_BFS(new Accumulator(doc, BFS_elements, eval));
+		for_dfs.traverse(doc);
+		for_bfs.traverse(doc);
+		
+		assertEquals(3, DFS_elements.size());
+		assertEquals(3, BFS_elements.size());
+	}
+}
+```
+#
+테스트 결과
+#
+![testResult](https://user-images.githubusercontent.com/57391270/69968082-0946d400-155d-11ea-80d8-12f02dd87b8a.JPG)
+#
 
