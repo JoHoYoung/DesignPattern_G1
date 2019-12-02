@@ -114,6 +114,17 @@ public abstract class Evaluator {
 Evaluator 추상 클래스를 만들어 공통적인 matches 메소드를 캡슐화한다.
 
 ```java
+ public static final class IsFirstChild extends Evaluator {
+    	@Override
+    	public boolean matches(Element root, Element element) {
+    		final Element p = element.parent();
+    		return p != null && !(p instanceof Document) && element.elementSiblingIndex() == 0;
+    	}
+```
+
+#
+
+```java
 public static final class IsLastChild extends Evaluator {
 		@Override
 		public boolean matches(Element root, Element element) {
@@ -127,16 +138,7 @@ public static final class IsLastChild extends Evaluator {
 		}
     }
 ```
-#
 
-```java
- public static final class IsFirstChild extends Evaluator {
-    	@Override
-    	public boolean matches(Element root, Element element) {
-    		final Element p = element.parent();
-    		return p != null && !(p instanceof Document) && element.elementSiblingIndex() == 0;
-    	}
-```
 Evaluator 클래스를 구현하는 Concrete 클래스에서는 각기 다른 matches 로직을
 구현한다.  
 #
