@@ -30,7 +30,7 @@ QueryParser : 사용자가 입력한 조건(String)을 파싱하여 String의 �
 
 # 팩토리 패턴
 #
-![factory](https://user-images.githubusercontent.com/57391270/69934459-48513700-1515-11ea-9d75-0b843fafead9.jpg)
+![factory (1)](https://user-images.githubusercontent.com/57391270/69934639-e1804d80-1515-11ea-9a14-376b4dba5b84.jpg)
 #
 소스코드
 #
