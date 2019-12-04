@@ -11,7 +11,7 @@ import org.jsoup.select.NodeFilter.FilterResult;
  * This implementation does not use recursion, so a deep DOM does not risk blowing the stack.
  * </p>
  */
-public class NodeTraversor {
+public class NodeTraversor implements MasterTraverse {
     private NodeVisitor visitor;
 
     /**
@@ -19,6 +19,7 @@ public class NodeTraversor {
      * @param visitor a class implementing the {@link NodeVisitor} interface, to be called when visiting each node.
      * @deprecated Just use the static {@link NodeTraversor#filter(NodeFilter, Node)} method.
      */
+    public NodeTraversor() {}
     public NodeTraversor(NodeVisitor visitor) {
         this.visitor = visitor;
     }
@@ -35,12 +36,11 @@ public class NodeTraversor {
     /**
      * Start a depth-first traverse of the root and all of its descendants.
      * @param visitor Node visitor.
-     * @param root the root node point to traverse.
+     * @param root the root node phoint to traverse.
      */
-    public static void traverse(NodeVisitor visitor, Node root) {
+    public static void traverse(NodeVisitor visitor, Node root) { 
         Node node = root;
         int depth = 0;
-        
         while (node != null) {
             visitor.head(node, depth);
             if (node.childNodeSize() > 0) {
@@ -124,6 +124,13 @@ public class NodeTraversor {
         return FilterResult.CONTINUE;
     }
 
+    
+    /* 
+     * 
+     * 
+     * 
+     * */
+    
     /**
      * Start a depth-first filtering of all elements.
      * @param filter Node filter.
