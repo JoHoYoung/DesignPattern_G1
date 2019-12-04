@@ -53,7 +53,7 @@ public static String cleanBlacklist(String bodyHtml, Filter filter) {
 
 기존의 Whitelist 기능은 다음과 같이 정상적으로 모든 테스트를 통과한다.
 
-![image-20191204021441699](/Users/kim/Library/Application Support/typora-user-images/image-20191204021441699.png)
+![image-20191204021441699](../images/whitelist_test.png)
 
 # 목적
 
