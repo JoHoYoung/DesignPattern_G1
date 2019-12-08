@@ -32,16 +32,16 @@ import java.util.List;
  Rather than interacting directly with a Cleaner object, generally see the {@code clean} methods in {@link org.jsoup.Jsoup}.
  </p>
  */
-public class Cleaner {
-    private Whitelist whitelist;
+public abstract class Cleaner {
+    protected Filter filter;
 
     /**
      Create a new cleaner, that sanitizes documents using the supplied whitelist.
-     @param whitelist white-list to clean with
+     @param filter white-list to clean with
      */
-    public Cleaner(Whitelist whitelist) {
-        Validate.notNull(whitelist);
-        this.whitelist = whitelist;
+    public Cleaner(Filter filter) {
+        Validate.notNull(filter);
+        this.filter = filter;
     }
 
     /**
@@ -90,60 +90,9 @@ public class Cleaner {
         return numDiscarded == 0 && errorList.isEmpty();
     }
 
-    /**
-     Iterates the input and copies trusted nodes (tags, attributes, text) into the destination.
-     */
-    private final class CleaningVisitor implements NodeVisitor {
-        private int numDiscarded = 0;
-        private final Element root;
-        private Element destination; // current element to append nodes to
+    abstract int copySafeNodes(Element source, Element dest);
 
-        private CleaningVisitor(Element root, Element destination) {
-            this.root = root;
-            this.destination = destination;
-        }
-
-        public void head(Node source, int depth) {
-            if (source instanceof Element) {
-                Element sourceEl = (Element) source;
-
-                if (whitelist.isSafeTag(sourceEl.tagName())) { // safe, clone and copy safe attrs
-                    ElementMeta meta = createSafeElement(sourceEl);
-                    Element destChild = meta.el;
-                    destination.appendChild(destChild);
-
-                    numDiscarded += meta.numAttribsDiscarded;
-                    destination = destChild;
-                } else if (source != root) { // not a safe tag, so don't add. don't count root against discarded.
-                    numDiscarded++;
-                }
-            } else if (source instanceof TextNode) {
-                TextNode sourceText = (TextNode) source;
-                TextNode destText = new TextNode(sourceText.getWholeText());
-                destination.appendChild(destText);
-            } else if (source instanceof DataNode && whitelist.isSafeTag(source.parent().nodeName())) {
-              DataNode sourceData = (DataNode) source;
-              DataNode destData = new DataNode(sourceData.getWholeData());
-              destination.appendChild(destData);
-            } else { // else, we don't care about comments, xml proc instructions, etc
-                numDiscarded++;
-            }
-        }
-
-        public void tail(Node source, int depth) {
-            if (source instanceof Element && whitelist.isSafeTag(source.nodeName())) {
-                destination = destination.parent(); // would have descended, so pop destination stack
-            }
-        }
-    }
-
-    private int copySafeNodes(Element source, Element dest) {
-        CleaningVisitor cleaningVisitor = new CleaningVisitor(source, dest);
-        NodeTraversor.traverse(cleaningVisitor, source);
-        return cleaningVisitor.numDiscarded;
-    }
-
-    private ElementMeta createSafeElement(Element sourceEl) {
+    protected ElementMeta createSafeElement(Element sourceEl) {
         String sourceTag = sourceEl.tagName();
         Attributes destAttrs = new Attributes();
         Element dest = new Element(Tag.valueOf(sourceTag), sourceEl.baseUri(), destAttrs);
@@ -151,18 +100,18 @@ public class Cleaner {
 
         Attributes sourceAttrs = sourceEl.attributes();
         for (Attribute sourceAttr : sourceAttrs) {
-            if (whitelist.isSafeAttribute(sourceTag, sourceEl, sourceAttr))
+            if (filter.isSafeAttribute(sourceTag, sourceEl, sourceAttr))
                 destAttrs.put(sourceAttr);
             else
                 numDiscarded++;
         }
-        Attributes enforcedAttrs = whitelist.getEnforcedAttributes(sourceTag);
+        Attributes enforcedAttrs = filter.getEnforcedAttributes(sourceTag);
         destAttrs.addAll(enforcedAttrs);
 
         return new ElementMeta(dest, numDiscarded);
     }
 
-    private static class ElementMeta {
+    protected static class ElementMeta {
         Element el;
         int numAttribsDiscarded;
 

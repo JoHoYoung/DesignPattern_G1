@@ -13,7 +13,7 @@ import org.jsoup.nodes.Entities;
 import org.jsoup.nodes.FormElement;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Filter;
 import org.jsoup.select.Elements;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -1163,8 +1163,8 @@ public class HtmlParserTest {
         parser.parseInput(html, "");
         assertEquals(0, parser.getErrors().size());
 
-        assertTrue(Jsoup.isValid(html, Whitelist.basic()));
-        String clean = Jsoup.clean(html, Whitelist.basic());
+        assertTrue(Jsoup.isValidWhitelist(html, Filter.basic()));
+        String clean = Jsoup.cleanWhitelist(html, Filter.basic());
         assertEquals("<p>test<br>test<br></p>", clean);
     }
 
@@ -1175,8 +1175,8 @@ public class HtmlParserTest {
         assertEquals(1, parser.getErrors().size());
         assertEquals("18: Tag cannot be self closing; not a void tag", parser.getErrors().get(0).toString());
 
-        assertFalse(Jsoup.isValid(html, Whitelist.relaxed()));
-        String clean = Jsoup.clean(html, Whitelist.relaxed());
+        assertFalse(Jsoup.isValidWhitelist(html, Filter.relaxed()));
+        String clean = Jsoup.cleanWhitelist(html, Filter.relaxed());
         assertEquals("<p>test</p> <div></div> <div> Two </div>", StringUtil.normaliseWhitespace(clean));
     }
 

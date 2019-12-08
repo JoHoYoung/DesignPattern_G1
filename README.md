@@ -1,3 +1,15 @@
+# CAU Design Pattern Term Project
+
+중앙대학교 설계 패턴 수업의 텀 프로젝트 레포지토리 입니다. Jsoup을 주제로 하고 있으며 저작권 및 원본 코드는 [Jsoup 레파지토리](https://github.com/jhy/jsoup) 에서 확인 할 수 있습니다.
+
+**팀원**
+
+- 조호영
+- 오창균
+- 김성재
+- 윤희성
+
+---
 # jsoup: Java HTML Parser
 
 **jsoup** is a Java library for working with real-world HTML. It provides a very convenient API for extracting and manipulating data, using the best of DOM, CSS, and jquery-like methods.
