@@ -226,7 +226,7 @@ public class DocumentType extends LeafNode {
 2. 해당 final변수들을 다양하게 가져가려 할 때. DocumentType클래스를 수정해야 한다.
 3. DocumentType객체에 PUBLIC_KEY등을 변경할때 변경값, 현재 값이 따로 저장되어 있지 않다.
 
-#### 해결방안 (Factory Method Pattern + Singleton Pattern)
+#### 해결방안 (Factory Method Pattern + Singleton Pattern, OCP, DIP)
 ![개선](https://user-images.githubusercontent.com/37579650/69910350-7a976180-144d-11ea-8c3c-343615d1b90b.png)
 1. 해당 final 변수들을 설정값 클래스로 따로 분리
 2. 상황에따라 해당 기본 값 변경시 클래스를 확장, composition으로 처리 할 수 있도록 Abstract Class 구현
@@ -299,6 +299,10 @@ public class DocumentType extends LeafNode {
     }
     attr(this.keyStore.getSystemIdType(), this.keyStore.getSystemId());
   }
+  
+   public void setKeyStore(String name) {
+      this.keyStore = keyStoreFactory.getKeyStore(name);
+   }
   .
   .
 }
