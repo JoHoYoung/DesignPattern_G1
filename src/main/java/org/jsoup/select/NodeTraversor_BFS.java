@@ -1,26 +1,23 @@
 package org.jsoup.select;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import org.jsoup.helper.Validate;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.NodeFilter.FilterResult;
 
-/**
- * Depth-first node traversor. Use to iterate through all nodes under and including the specified root node.
- * <p>
- * This implementation does not use recursion, so a deep DOM does not risk blowing the stack.
- * </p>
- */
-public class NodeTraversor implements MasterTraverse {
-    private NodeVisitor visitor;
+public class NodeTraversor_BFS implements MasterTraverse{
+	private NodeVisitor visitor;
 
     /**
      * Create a new traversor.
      * @param visitor a class implementing the {@link NodeVisitor} interface, to be called when visiting each node.
      * @deprecated Just use the static {@link NodeTraversor#filter(NodeFilter, Node)} method.
      */
-    public NodeTraversor() {}
-    public NodeTraversor(NodeVisitor visitor) {
+	public NodeTraversor_BFS() {}
+    public NodeTraversor_BFS(NodeVisitor visitor) {
         this.visitor = visitor;
     }
 
@@ -38,26 +35,22 @@ public class NodeTraversor implements MasterTraverse {
      * @param visitor Node visitor.
      * @param root the root node phoint to traverse.
      */
-    public static void traverse(NodeVisitor visitor, Node root) { 
+    public static void traverse(NodeVisitor visitor, Node root) {
+    	
+    	Queue<Node> q = new LinkedList<Node>();
         Node node = root;
         int depth = 0;
-        while (node != null) {
-            visitor.head(node, depth);
-            if (node.childNodeSize() > 0) {
-                node = node.childNode(0);
-                depth++;
-            } else {
-                while (node.nextSibling() == null && depth > 0) {
-                    visitor.tail(node, depth);
-                    node = node.parentNode();
-                    depth--;
-                }
-                visitor.tail(node, depth);
-                if (node == root)
-                    break;
-                node = node.nextSibling();
-            }
+        q.add(root);
+        
+        while(!q.isEmpty()) {
+        	node = q.poll();
+        	visitor.head(node, depth);
+        	
+        	for(int i=0; i<node.childNodeSize(); i++) {
+        		q.add(node.childNode(i));
+        	}
         }
+        
     }
 
     /**
@@ -144,3 +137,4 @@ public class NodeTraversor implements MasterTraverse {
                 break;
     }
 }
+
